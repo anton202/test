@@ -6,23 +6,16 @@ import { HttpClient } from '@angular/common/http';
     providedIn: 'root'
 })
 export class WeatherCardService {
-    
     public daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wedensday', 'Thursday', 'Friday', 'Saturday'];
+    
     constructor(private http: HttpClient) { }
 
-    public getIcon(iconNumber) {
-        if(iconNumber < 10){
-            iconNumber = '0' + iconNumber
-        }
-        return this.http.get(`https://developer.accuweather.com/sites/default/files/${iconNumber}-s.png`);
-    }
-
-    public getDayOfWeek(date) {
+    public getDayOfWeek(date): string {
         const getDate = new Date(date).getDay();
         return this.daysOfWeek[getDate];
     }
 
-    public convertToCelsius(temperature: number) {
+    public convertToCelsius(temperature: number): number {
         return Math.floor((temperature - 32) * 5 / 9);
     }
 }

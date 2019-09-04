@@ -13,6 +13,8 @@ export class WeatherComponent implements OnInit {
   public locationKey: number | boolean;
   public locationNameDoseNotExist: boolean;
   public forecast:[];
+  public fetchingForecast: boolean = false;
+  public weeklyWeatherStatus: string;
 
   constructor(private apiService: ApiService) { }
 
@@ -42,11 +44,14 @@ export class WeatherComponent implements OnInit {
       this.locationNameDoseNotExist = true;
       return
     }
+    this.fetchingForecast = true;
     this.locationNameDoseNotExist = false;
     this.apiService.getWeatherForecast(locationKey)
       .subscribe(forecast =>{
-        this.forecast = forecast.DailyForecasts;
         console.log(forecast)
+        this.fetchingForecast = false;
+        this.forecast = forecast.DailyForecasts;
+        this.weeklyWeatherStatus = forecast.Headline.Text;
       })
   }
 }

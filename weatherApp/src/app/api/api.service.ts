@@ -11,7 +11,6 @@ export class ApiService {
   constructor(private http: HttpClient) { }
 
   public locationNameSuggestion(locationName: string): Observable<any> {
-   
     return this.http.get(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${this.apiKey}&q=${locationName}`)
   }
 
