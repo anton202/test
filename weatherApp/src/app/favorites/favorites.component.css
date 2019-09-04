@@ -19,3 +19,15 @@
       flex-direction: row;
       flex-wrap: wrap;
   }
+
+  app-weather-card{
+    width: 15%;
+    height: 50%;
+  }
+
+  @media (max-width: 640px) {
+    app-weather-card{
+        width: 90%;
+        height: unset;
+      }
+  }

@@ -51,7 +51,35 @@ mat-form-field {
   display: flex;
   flex-direction: row;
   width: 85%;
+  height: 50%;
   margin: auto;
   margin-top: 10%;
   justify-content: space-around
+}
+
+
+app-weather-card{
+  width: 17%;
+}
+
+@media (max-width: 640px) {
+  .weather-days{
+    flex-direction: column;
+    height: 60%;
+    overflow: auto;
+    justify-content: unset;
+  }
+
+  .search-city {
+    width: 60%;
+    font-size: 1.5rem;
+  }
+
+  .city-degree{
+    font-size: 1.5rem
+  }
+
+  app-weather-card{
+    width: 100%;
+  }
 }
