@@ -45,6 +45,11 @@ mat-form-field {
     justify-content: center;
 }
 
+.weather-icon img{
+  height: 4.5rem;
+  width: 7.5rem;
+}
+
 .city-degree{
     display: flex;
     flex-direction: column;

@@ -19,11 +19,11 @@
   <div class="todays-weather-favorite">
     <div class="icon-city-container">
       <div class="weather-icon">
-        <img src="" alt="icon">
+        <img [src]="weatherIcon" alt="icon">
       </div>
       <div class="city-degree">
-        <span>Tel-aviv</span>
-        <span>39c</span>
+        <span>{{locationName}}</span>
+        <span>{{temperature}}c</span>
       </div>
     </div>
     <div class="favorite">

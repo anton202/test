@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+
+import { WeatherCardService } from '../weather-card/weather-card.service';
 
 
 @Component({
@@ -17,8 +21,12 @@ export class WeatherComponent implements OnInit {
   public forecast: any[];
   public fetchingForecast: boolean = false;
   public weeklyWeatherStatus: string;
+  private geoLocationWeather: Observable<[]>
+  public locationName: string;
+  public temperature: number;
+  public weatherIcon: string;
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute) { }
+  constructor(private apiService: ApiService, private route: ActivatedRoute, private weatherCardService: WeatherCardService) { }
 
   ngOnInit() {
     this.searchFormItialization();
@@ -55,38 +63,73 @@ export class WeatherComponent implements OnInit {
         this.fetchingForecast = false;
         this.forecast = forecast.DailyForecasts;
         this.weeklyWeatherStatus = forecast.Headline.Text;
+        this.locationName = locationName;
+        this.temperature = this.setTemperature(forecast);
+        this.weatherIcon = this.setWeatherIcon(forecast.DailyForecasts[0].Day.Icon);
       })
   }
 
-  private async defaultForecast() {
+  private defaultForecast() {
     const locationKey = this.route.snapshot.paramMap.get('locationKey');
     if (locationKey) {
-      return this.apiService.getWeatherForecast(locationKey)
-        .subscribe(forecast => {
-          this.forecast = forecast.DailyForecasts;
-        })
+      this.getFavoriteForecast(locationKey);
     }
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        this.apiService.getLocationKeyByGeoLocation({ latitude, longitude })
-          .subscribe((location: { Key }) => {
-            this.apiService.getWeatherForecast(location.Key)
-              .subscribe(forecast => {
-                this.forecast = forecast.DailyForecasts
-                this.weeklyWeatherStatus = forecast.Headline.Text;
-              })
-          })
-      })
+      navigator.geolocation.getCurrentPosition(this.getForecastByGeoLocation.bind(this))
     } else {
-      const telAvivLocationKey = 215854;
-      this.apiService.getWeatherForecast(telAvivLocationKey)
-        .subscribe(forecast => {
-          this.forecast = forecast.DailyForecasts;
-          this.weeklyWeatherStatus = forecast.Headline.Text;
-        })
+      this.getTelAvivForecast();
     }
+  }
+
+  private getForecastByGeoLocation(position:any): void {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    this.geoLocationWeather = this.apiService.getLocationKeyByGeoLocation(latitude, longitude)
+      .pipe(mergeMap((location: { Key }) => this.apiService.getWeatherForecast(location.Key)));
+
+    this.geoLocationWeather.subscribe((forecast: any) => {
+      this.forecast = forecast.DailyForecasts
+      this.weeklyWeatherStatus = forecast.Headline.Text;
+      this.temperature = this.setTemperature(forecast);
+      this.weatherIcon = this.setWeatherIcon(forecast.DailyForecasts[0].Day.Icon);
+    })
+
+    this.apiService.getLocationKeyByGeoLocation(latitude, longitude)
+      .subscribe((locationInfo:{LocalizedName}) =>{
+        this.locationName = locationInfo.LocalizedName;
+      })
+  }
+
+  private getTelAvivForecast(): void {
+    const telAvivLocationKey = 215854;
+    this.apiService.getWeatherForecast(telAvivLocationKey)
+      .subscribe(forecast => {
+        this.forecast = forecast.DailyForecasts;
+        this.weeklyWeatherStatus = forecast.Headline.Text;
+        this.locationName = 'Tel-Aviv'
+      })
+  }
+
+  private getFavoriteForecast(locationKey:number | string): void {
+    this.apiService.getWeatherForecast(locationKey)
+      .subscribe(forecast => {
+        // need to set locationName property and temperatre.
+        this.forecast = forecast.DailyForecasts;
+      })
+  }
+
+  private setTemperature(forecastObj){
+   return this.weatherCardService.convertToCelsius(forecastObj.DailyForecasts[0].Temperature.Maximum.Value);
+  }
+
+  private setWeatherIcon(iconNumber){
+    if(iconNumber < 10){
+      return `https://developer.accuweather.com/sites/default/files/${'0' + iconNumber}-s.png`
+    }
+    return `https://developer.accuweather.com/sites/default/files/${iconNumber}-s.png`
   }
 
 }
+
+

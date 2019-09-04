@@ -18,8 +18,8 @@ export class ApiService {
     return this.http.get(`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationKey}?apikey=${this.apiKey}`)
   }
 
-  public getLocationKeyByGeoLocation(position){
-    return this.http.get(`http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${this.apiKey}&q=${position.latitude}%2C${position.longitude}`)
+  public getLocationKeyByGeoLocation(latitude,longitude){
+    return this.http.get(`http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${this.apiKey}&q=${latitude}%2C${longitude}`)
   }
 
   public getLocationKey(locationArray: any, locationName: string): number | boolean {
