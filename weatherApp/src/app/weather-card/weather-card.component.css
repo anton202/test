@@ -1,0 +1,26 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid darkgrey;
+    width: 12rem;
+    height: 25rem;
+    background-color: #fafafa;
+    border-radius: .5rem;
+    justify-content: space-around;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.container:hover{
+    transform: translateY(-.3rem);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .2);
+}
+
+.container span{
+    display: block;
+}
+
+.container img{
+    display: block;
+}
+
