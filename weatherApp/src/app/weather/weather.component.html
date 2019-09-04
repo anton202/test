@@ -1,10 +1,18 @@
 <div class="container">
   <div class="search-city">
-    <form>
+    <form [formGroup]="searchForm">
       <mat-form-field>
-        <input type="text" matInput placeholder="Enter City Name">
-        <mat-icon matSuffix><i class="material-icons">search</i></mat-icon>
+        <input formControlName="locationName" type="text" matInput placeholder="Enter City Name"
+          (keypress)="getLocationName()" [matAutocomplete]="auto">
+       
+        <mat-icon matSuffix (click)="getWeather()"><i class="material-icons">search</i></mat-icon>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let location of locationNameSuggestion" [value]="location.LocalizedName">
+            {{ location.LocalizedName }}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
+      <mat-error *ngIf="locationNameDoseNotExist">Location name not found</mat-error>
     </form>
   </div>
   <div class="todays-weather-favorite">
@@ -24,10 +32,7 @@
     </div>
   </div>
   <div class="weather-days">
-      <app-weather-card></app-weather-card>
-      <app-weather-card></app-weather-card>
-      <app-weather-card></app-weather-card>
-      <app-weather-card></app-weather-card>
-      <app-weather-card></app-weather-card>
+    <app-weather-card *ngFor="let dailyForecast of forecast" [dailyForecast]="dailyForecast"></app-weather-card>
+    
   </div>
 </div>

@@ -10,7 +10,23 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  public locationNameSuggestion(locationName): Observable<any>{
-    return this.http.get(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${this.apiKey}q=${locationName}`)
+  public locationNameSuggestion(locationName: string): Observable<any> {
+   
+    return this.http.get(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${this.apiKey}&q=${locationName}`)
   }
+
+  public getWeatherForecast(locationKey):Observable<any>{
+    return this.http.get(`http://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationKey}?apikey=${this.apiKey}`)
+  }
+
+  public getLocationKey(locationArray: any, locationName: string): number | boolean {
+    for (let i = 0; i < locationArray.length; i++) {
+      if (locationArray[i].LocalizedName === locationName) {
+        return locationArray[i].Key;
+      }
+    }
+    return null;
+  }
+
+
 }
