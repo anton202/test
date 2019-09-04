@@ -8,13 +8,15 @@ import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { WeatherComponent } from './weather/weather.component';
 import { WeatherCardComponent } from './weather-card/weather-card.component';
+import { FavoritesComponent } from './favorites/favorites.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
     WeatherComponent,
-    WeatherCardComponent
+    WeatherCardComponent,
+    FavoritesComponent
   ],
   imports: [
     BrowserModule,
