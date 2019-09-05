@@ -7,7 +7,7 @@ import { FavoritesComponent } from './favorites/favorites.component';
 const routes: Routes = [
   { path: "", component: WeatherComponent },
   { path: 'weather', component: WeatherComponent },
-  { path: 'weather/:locationKey', component: WeatherComponent },
+  { path: 'weather/:locationKey/:locationName', component: WeatherComponent },
   { path: 'favorites', component: FavoritesComponent }
 ];
 

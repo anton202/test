@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { WeatherCardService } from './weather-card.service';
 import { favorite } from '../favorites/store/favorites.action';
 
@@ -17,7 +19,7 @@ export class WeatherCardComponent implements OnInit {
   public locationName: string
   
 
-  constructor(private weatherCardService: WeatherCardService) { }
+  constructor(private weatherCardService: WeatherCardService, private router: Router) { }
 
   ngOnInit() {
     if(this.dailyForecast){
@@ -32,5 +34,10 @@ export class WeatherCardComponent implements OnInit {
   }
 }
  
+public showFavoriteWeather(): void{
+if (this.favoriteData){
+  this.router.navigate(['/weather',{locationKey:this.favoriteData.id, locationName:this.favoriteData.name}])
+}
+}
   
 }

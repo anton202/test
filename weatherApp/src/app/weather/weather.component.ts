@@ -83,8 +83,9 @@ export class WeatherComponent implements OnInit {
 
   private defaultForecast() {
     const locationKey = this.route.snapshot.paramMap.get('locationKey');
+    console.log(locationKey)
     if (locationKey) {
-      this.getFavoriteForecast(locationKey);
+     return this.getFavoriteForecast(locationKey);
     }
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(this.getForecastByGeoLocation.bind(this))
@@ -126,8 +127,11 @@ export class WeatherComponent implements OnInit {
   private getFavoriteForecast(locationKey: number | string): void {
     this.apiService.getWeatherForecast(locationKey)
       .subscribe(forecast => {
-        // need to set locationName property and temperatre.
         this.forecast = forecast.DailyForecasts;
+        this.locationName = this.route.snapshot.paramMap.get('locationName');
+        this.temperature = this.setTemperature(forecast)
+        this.weatherIcon = this.setWeatherIcon(forecast.DailyForecasts[0].Day.Icon);
+        this.weeklyWeatherStatus = forecast.Headline.Text;
       })
   }
 
