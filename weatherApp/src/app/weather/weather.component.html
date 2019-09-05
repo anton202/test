@@ -28,7 +28,7 @@
     </div>
     <div class="favorite">
       <button mat-fab (click)="addToFavorites()">
-        <mat-icon>favorite</mat-icon>
+        <mat-icon [ngClass]="{'color-favorite':isFavorite}">favorite</mat-icon>
       </button>
     </div>
   </div>

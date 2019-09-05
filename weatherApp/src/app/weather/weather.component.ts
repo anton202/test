@@ -27,6 +27,8 @@ export class WeatherComponent implements OnInit {
   public locationName: string;
   public temperature: number;
   public weatherIcon: string;
+  public isFavorite: boolean;
+  private favorites: any;
 
   constructor(
     private apiService: ApiService,
@@ -38,6 +40,7 @@ export class WeatherComponent implements OnInit {
   ngOnInit() {
     this.searchFormItialization();
     this.defaultForecast()
+    this.getFavoriteLocations();
   }
 
   private searchFormItialization(): void {
@@ -46,8 +49,14 @@ export class WeatherComponent implements OnInit {
     })
   }
 
-  public addToFavorites(): void{
-    this.store.dispatch(new FavoritesAction.AddToFavorites({ id: this.locationKey, name: this.locationName, weather: this.temperature, icon:this.weatherIcon }))
+  public addToFavorites(): void {
+    if(this.isFavorite){
+      this.store.dispatch(new FavoritesAction.RemoveFavorite(this.locationName));
+      this.isFavorite = false;
+    }else{
+    this.isFavorite = true;
+    this.store.dispatch(new FavoritesAction.AddToFavorites({ id: this.locationKey, name: this.locationName, weather: this.temperature, icon: this.weatherIcon }))
+    }
   }
 
   public getLocationName(): void {
@@ -69,9 +78,9 @@ export class WeatherComponent implements OnInit {
     this.fetchingForecast = true;
     this.locationNameDoseNotExist = false;
     this.apiService.getWeatherForecast(locationKey)
-    .subscribe(forecast => {
-      console.log(forecast)
-      this.locationKey = locationKey;
+      .subscribe(forecast => {
+        this.checkIfFavorite(locationName);
+        this.locationKey = locationKey;
         this.fetchingForecast = false;
         this.forecast = forecast.DailyForecasts;
         this.weeklyWeatherStatus = forecast.Headline.Text;
@@ -83,9 +92,8 @@ export class WeatherComponent implements OnInit {
 
   private defaultForecast() {
     const locationKey = this.route.snapshot.paramMap.get('locationKey');
-    console.log(locationKey)
     if (locationKey) {
-     return this.getFavoriteForecast(locationKey);
+      return this.getFavoriteForecast(locationKey);
     }
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(this.getForecastByGeoLocation.bind(this))
@@ -127,6 +135,7 @@ export class WeatherComponent implements OnInit {
   private getFavoriteForecast(locationKey: number | string): void {
     this.apiService.getWeatherForecast(locationKey)
       .subscribe(forecast => {
+        this.isFavorite = true;
         this.forecast = forecast.DailyForecasts;
         this.locationName = this.route.snapshot.paramMap.get('locationName');
         this.temperature = this.setTemperature(forecast)
@@ -146,6 +155,21 @@ export class WeatherComponent implements OnInit {
     return `https://developer.accuweather.com/sites/default/files/${iconNumber}-s.png`
   }
 
+  private checkIfFavorite(locationName){
+   for(let i = 0; i < this.favorites.length; i++){
+     if(locationName === this.favorites[i].name){
+       return this.isFavorite = true;
+     }
+     this.isFavorite = false;
+   }
+  }
+
+  private getFavoriteLocations(){
+    this.store.select('favorites')
+    .subscribe(favorites =>{
+      this.favorites = favorites.favorites;
+    })
+  }
 }
 
 

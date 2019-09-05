@@ -11,7 +11,17 @@ export function favoritesReducer(state = initialState, action) {
                 ...state,
                 favorites: [...state.favorites, action.payload]
             };
-            default: 
+
+        case FavoritesAction.REMOVE_FAVORITE:
+            console.log(action.payload)
+            return {
+                ...state,
+                favorites: state.favorites.filter((favoriteObj) => {
+                    console.log(favoriteObj)
+                   return favoriteObj.name !== action.payload
+                })
+            }
+        default:
             return initialState;
     }
 }

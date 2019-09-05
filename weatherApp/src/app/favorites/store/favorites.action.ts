@@ -15,3 +15,8 @@ export class AddToFavorites implements Action {
 
     constructor(public payload: favorite) { }
 }
+
+export class RemoveFavorite implements Action{
+    readonly type = REMOVE_FAVORITE;
+    constructor(public payload: string){}
+}

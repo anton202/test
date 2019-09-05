@@ -64,6 +64,10 @@ mat-form-field {
   margin-right: 3rem;
 }
 
+.color-favorite{
+  color: blueviolet;
+}
+
 .progress-spinner mat-spinner{
   margin: auto;
 }
