@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="favorite">
-      <button mat-fab>
+      <button mat-fab (click)="addToFavorites()">
         <mat-icon>favorite</mat-icon>
       </button>
     </div>
@@ -36,7 +36,7 @@
       <mat-spinner></mat-spinner>
   </div>
   
-  <div class="weeklyWeatherStatus">
+  <div class="weeklyWeatherStatus" *ngIf="!fetchingForecast">
       <span>{{weeklyWeatherStatus}}</span>
     </div>
   <div class="weather-days" *ngIf="!fetchingForecast">

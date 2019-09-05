@@ -22,10 +22,14 @@
 
   app-weather-card{
     width: 15%;
-    height: 50%;
+    height: 60%;
   }
 
   @media (max-width: 640px) {
+    .favorites{
+      display: block;
+    }
+
     app-weather-card{
         width: 90%;
         height: unset;

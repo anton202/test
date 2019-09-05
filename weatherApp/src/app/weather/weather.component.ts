@@ -4,8 +4,10 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
 import { WeatherCardService } from '../weather-card/weather-card.service';
+import * as FavoritesAction from '../favorites/store/favorites.action';
 
 
 @Component({
@@ -26,7 +28,12 @@ export class WeatherComponent implements OnInit {
   public temperature: number;
   public weatherIcon: string;
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute, private weatherCardService: WeatherCardService) { }
+  constructor(
+    private apiService: ApiService,
+    private route: ActivatedRoute,
+    private weatherCardService: WeatherCardService,
+    private store: Store<{ favorites: { favorites } }>
+  ) { }
 
   ngOnInit() {
     this.searchFormItialization();
@@ -37,6 +44,10 @@ export class WeatherComponent implements OnInit {
     this.searchForm = new FormGroup({
       locationName: new FormControl(null)
     })
+  }
+
+  public addToFavorites(): void{
+    this.store.dispatch(new FavoritesAction.AddToFavorites({ id: this.locationKey, name: this.locationName, weather: this.temperature, icon:this.weatherIcon }))
   }
 
   public getLocationName(): void {
@@ -58,8 +69,9 @@ export class WeatherComponent implements OnInit {
     this.fetchingForecast = true;
     this.locationNameDoseNotExist = false;
     this.apiService.getWeatherForecast(locationKey)
-      .subscribe(forecast => {
-        console.log(forecast)
+    .subscribe(forecast => {
+      console.log(forecast)
+      this.locationKey = locationKey;
         this.fetchingForecast = false;
         this.forecast = forecast.DailyForecasts;
         this.weeklyWeatherStatus = forecast.Headline.Text;
@@ -81,7 +93,7 @@ export class WeatherComponent implements OnInit {
     }
   }
 
-  private getForecastByGeoLocation(position:any): void {
+  private getForecastByGeoLocation(position: any): void {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
 
@@ -96,7 +108,7 @@ export class WeatherComponent implements OnInit {
     })
 
     this.apiService.getLocationKeyByGeoLocation(latitude, longitude)
-      .subscribe((locationInfo:{LocalizedName}) =>{
+      .subscribe((locationInfo: { LocalizedName }) => {
         this.locationName = locationInfo.LocalizedName;
       })
   }
@@ -111,7 +123,7 @@ export class WeatherComponent implements OnInit {
       })
   }
 
-  private getFavoriteForecast(locationKey:number | string): void {
+  private getFavoriteForecast(locationKey: number | string): void {
     this.apiService.getWeatherForecast(locationKey)
       .subscribe(forecast => {
         // need to set locationName property and temperatre.
@@ -119,12 +131,12 @@ export class WeatherComponent implements OnInit {
       })
   }
 
-  private setTemperature(forecastObj){
-   return this.weatherCardService.convertToCelsius(forecastObj.DailyForecasts[0].Temperature.Maximum.Value);
+  private setTemperature(forecastObj) {
+    return this.weatherCardService.convertToCelsius(forecastObj.DailyForecasts[0].Temperature.Maximum.Value);
   }
 
-  private setWeatherIcon(iconNumber){
-    if(iconNumber < 10){
+  private setWeatherIcon(iconNumber) {
+    if (iconNumber < 10) {
       return `https://developer.accuweather.com/sites/default/files/${'0' + iconNumber}-s.png`
     }
     return `https://developer.accuweather.com/sites/default/files/${iconNumber}-s.png`

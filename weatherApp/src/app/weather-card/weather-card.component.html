@@ -1,5 +1,5 @@
 <div class="container">
-    <img [src]="weatherIcon" alt="weatherIcon">
-    <span>{{dayOfWeek}}</span>
+    <img *ngIf="weatherIcon" [src]="weatherIcon" alt="weatherIcon">
+    <span>{{dayOfWeek || locationName}}</span>
     <span>{{temperature}}c</span>
 </div>
