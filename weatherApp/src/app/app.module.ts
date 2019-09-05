@@ -13,6 +13,7 @@ import { WeatherComponent } from './weather/weather.component';
 import { WeatherCardComponent } from './weather-card/weather-card.component';
 import { FavoritesComponent } from './favorites/favorites.component';
 import { favoritesReducer } from './favorites/store/favorites.reducer';
+import { ErrorMessageComponent } from './error-message/error-message.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { favoritesReducer } from './favorites/store/favorites.reducer';
     NavComponent,
     WeatherComponent,
     WeatherCardComponent,
-    FavoritesComponent
+    FavoritesComponent,
+    ErrorMessageComponent
   ],
   imports: [
     BrowserModule,
@@ -30,6 +32,9 @@ import { favoritesReducer } from './favorites/store/favorites.reducer';
     HttpClientModule,
     MaterialModule,
     StoreModule.forRoot({favorites: favoritesReducer})
+  ],
+  entryComponents: [
+    ErrorMessageComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

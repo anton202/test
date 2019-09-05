@@ -87,6 +87,19 @@ mat-form-field {
 
 app-weather-card{
   width: 17%;
+  animation: slideWeatherCard 1.5s ease-out;
+}
+
+@keyframes slideWeatherCard{
+  0% {
+    opacity: 0;
+    transform: translateX(-300px)
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
 }
 
 @media (max-width: 640px) {
